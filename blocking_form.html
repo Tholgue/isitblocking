@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OFFICIAL BUG SEVERITY ASSESSMENT PROTOCOL — Form B-1138</title>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=JetBrains+Mono:wght@400;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f1ead8;
+    --paper-dark: #e4dcc4;
+    --ink: #1a1208;
+    --red: #a01810;
+    --red-deep: #6b0f0a;
+    --stamp: #8f1a12;
+    --rule: #2a1f10;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    min-height: 100%;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(0,0,0,0.08), transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(160,24,16,0.06), transparent 50%),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0,
+        transparent 22px,
+        rgba(26,18,8,0.04) 22px,
+        rgba(26,18,8,0.04) 23px
+      );
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+    opacity: 0.22;
+    mix-blend-mode: multiply;
+    z-index: 100;
+  }
+
+  .sheet {
+    max-width: 820px;
+    margin: 40px auto;
+    padding: 56px 64px 72px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    box-shadow:
+      0 0 0 1px var(--paper),
+      0 0 0 3px var(--ink),
+      8px 8px 0 rgba(0,0,0,0.15),
+      inset 0 0 80px rgba(107,15,10,0.06);
+    position: relative;
+  }
+
+  .sheet::before {
+    content: "FORM B-1138 · REV. 47 · CLASSIFIED INTERNAL";
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    background: var(--paper);
+    padding: 0 18px;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    font-weight: 800;
+  }
+
+  /* CORNER STAMP */
+  .stamp {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    width: 140px;
+    height: 140px;
+    border: 3px solid var(--stamp);
+    border-radius: 50%;
+    color: var(--stamp);
+    font-family: 'Special Elite', cursive;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(12deg);
+    opacity: 0.72;
+    text-align: center;
+    padding: 10px;
+  }
+  .stamp::before {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    border: 2px solid var(--stamp);
+    border-radius: 50%;
+  }
+  .stamp-top { font-size: 10px; letter-spacing: 0.15em; margin-bottom: 6px; }
+  .stamp-big { font-size: 22px; font-weight: 800; letter-spacing: 0.06em; line-height: 1; }
+  .stamp-bot { font-size: 9px; letter-spacing: 0.2em; margin-top: 6px; }
+
+  /* HEADER */
+  header {
+    border-bottom: 4px double var(--ink);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+  }
+  .dept {
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    color: var(--red-deep);
+    font-weight: 700;
+  }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin-bottom: 12px;
+  }
+  h1 em { font-style: italic; color: var(--red); }
+  .subtitle {
+    font-size: 12px;
+    line-height: 1.6;
+    font-style: italic;
+    max-width: 90%;
+    color: rgba(26,18,8,0.75);
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    margin-top: 18px;
+    padding-top: 12px;
+    border-top: 1px solid var(--ink);
+  }
+  .meta-row span { text-transform: uppercase; }
+
+  /* PREAMBLE */
+  .preamble {
+    background: rgba(160,24,16,0.05);
+    border-left: 4px solid var(--red);
+    padding: 14px 18px;
+    margin-bottom: 36px;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+  .preamble strong {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    color: var(--red-deep);
+    margin-bottom: 6px;
+  }
+
+  /* QUESTION CARD */
+  .card {
+    border: 1.5px solid var(--ink);
+    padding: 28px 32px 32px;
+    position: relative;
+    background: rgba(255,255,255,0.35);
+    margin-bottom: 24px;
+  }
+  .card-num {
+    position: absolute;
+    top: -14px;
+    left: 24px;
+    background: var(--paper);
+    padding: 0 10px;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    font-weight: 800;
+  }
+  .card-progress {
+    position: absolute;
+    top: -14px;
+    right: 24px;
+    background: var(--paper);
+    padding: 0 10px;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: rgba(26,18,8,0.55);
+  }
+
+  .question {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .question::before {
+    content: "Q. ";
+    color: var(--red);
+    font-weight: 700;
+  }
+  .footnote {
+    font-size: 11px;
+    font-style: italic;
+    color: rgba(26,18,8,0.6);
+    margin-bottom: 24px;
+    padding-left: 8px;
+    border-left: 2px solid rgba(26,18,8,0.2);
+  }
+
+  /* ANSWER BUTTONS */
+  .answers {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .ans {
+    border: 2px solid var(--ink);
+    background: var(--paper);
+    padding: 18px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.08s, box-shadow 0.08s;
+    text-align: left;
+    color: var(--ink);
+    overflow: hidden;
+  }
+  .ans::before {
+    content: "☐";
+    margin-right: 12px;
+    font-size: 18px;
+    opacity: 0.7;
+  }
+  .ans:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .ans:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 var(--ink);
+  }
+  .ans.yes::before { content: "☑"; }
+  .ans.yes { background: var(--ink); color: var(--paper); }
+  .ans.yes:hover { background: var(--red-deep); border-color: var(--red-deep); }
+
+  /* COUNTER SIDEBAR */
+  .counter {
+    position: fixed;
+    top: 40px;
+    left: 24px;
+    background: var(--paper);
+    border: 2px solid var(--ink);
+    padding: 16px 18px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    box-shadow: 4px 4px 0 var(--ink);
+    z-index: 50;
+  }
+  .counter-label { color: rgba(26,18,8,0.6); margin-bottom: 6px; }
+  .counter-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--red);
+    letter-spacing: 0;
+  }
+
+  /* VERDICT */
+  .verdict {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .verdict.show { display: block; animation: slam 0.4s cubic-bezier(.17,.67,.3,1.33); }
+  @keyframes slam {
+    0% { transform: scale(3) rotate(-8deg); opacity: 0; }
+    70% { transform: scale(0.96) rotate(1deg); }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .verdict-stamp {
+    display: inline-block;
+    border: 6px solid var(--red-deep);
+    color: var(--red-deep);
+    padding: 22px 52px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 56px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    transform: rotate(-4deg);
+    font-weight: 400;
+    position: relative;
+    background: rgba(255,255,255,0.4);
+  }
+  .verdict-stamp::before,
+  .verdict-stamp::after {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--red-deep);
+  }
+  .verdict-stamp::after { inset: -10px; opacity: 0.4; }
+  .verdict-small {
+    margin-top: 28px;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(26,18,8,0.7);
+    line-height: 2;
+  }
+  .verdict-big {
+    display: none;
+  }
+  .verdict.blocking .verdict-stamp {
+    border-color: var(--ink);
+    color: var(--ink);
+    background: rgba(160,24,16,0.1);
+    animation: shake 0.5s infinite;
+  }
+  @keyframes shake {
+    0%, 100% { transform: rotate(-4deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(-3deg); }
+  }
+
+  .reset {
+    margin-top: 40px;
+    background: transparent;
+    border: 1px dashed var(--ink);
+    padding: 12px 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  .reset:hover { background: var(--ink); color: var(--paper); }
+
+  /* FOOTER */
+  footer {
+    margin-top: 36px;
+    padding-top: 20px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(26,18,8,0.6);
+  }
+
+  .signature-line {
+    margin-top: 24px;
+    font-family: 'Special Elite', cursive;
+    font-size: 13px;
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+  }
+  .signature-line span {
+    border-bottom: 1px solid var(--ink);
+    flex: 1;
+    padding-bottom: 2px;
+    min-height: 20px;
+  }
+  .signature-line::after {
+    content: "x_________";
+    opacity: 0;
+  }
+
+  @media (max-width: 760px) {
+    .sheet { margin: 10px; padding: 36px 24px 48px; }
+    h1 { font-size: 30px; }
+    .question { font-size: 20px; }
+    .answers { grid-template-columns: 1fr; }
+    .stamp { width: 100px; height: 100px; top: 16px; right: 16px; }
+    .stamp-big { font-size: 16px; }
+    .counter { position: static; margin: 10px; display: inline-block; }
+  }
+</style>
+</head>
+<body>
+
+<div class="counter">
+  <div class="counter-label">Questions Endured</div>
+  <div class="counter-val" id="counter">00 / 00</div>
+</div>
+
+<div class="sheet">
+  <div class="stamp">
+    <div class="stamp-top">★ APPROVED ★</div>
+    <div class="stamp-big">DEPT. OF<br>TRIAGE</div>
+    <div class="stamp-bot">EST. 1847</div>
+  </div>
+
+  <header>
+    <div class="dept">Interdepartmental Severity Adjudication Bureau</div>
+    <h1>The Official <em>Is It Really</em> Blocking Assessment</h1>
+    <p class="subtitle">
+      A statutory questionnaire to be completed, in full and without omission, by any
+      engineer, designer, or project manager wishing to classify a defect, anomaly, or
+      unexpected behavior as "BLOCKING." Perjury is not a crime here, only an aesthetic choice.
+    </p>
+    <div class="meta-row">
+      <span>File No. ___________</span>
+      <span>Reporter: ___________</span>
+      <span>Date: <span id="date"></span></span>
+    </div>
+  </header>
+
+  <div class="preamble">
+    <strong>※ Notice to the Petitioner</strong>
+    You must answer "YES" to <em>every single question</em> below — without hesitation,
+    without qualification, without a single "well actually" — for your ticket to be
+    formally recognized as BLOCKING. A solitary "NO," anywhere, will result in immediate
+    reclassification. Please proceed with the gravity this honor deserves.
+  </div>
+
+  <!-- QUESTION AREA -->
+  <div class="card" id="questionCard">
+    <div class="card-num">INTERROGATIVE</div>
+    <div class="card-progress" id="progress">— / —</div>
+
+    <div class="question" id="questionText"></div>
+    <div class="footnote" id="footnoteText"></div>
+
+    <div class="answers">
+      <button class="ans yes" id="btnYes">Yes, absolutely.</button>
+      <button class="ans" id="btnNo">No. (or hmm…)</button>
+    </div>
+  </div>
+
+  <!-- VERDICT AREA -->
+  <div class="verdict" id="verdict">
+    <div class="verdict-stamp" id="verdictStamp">NOT BLOCKING</div>
+    <div class="verdict-small" id="verdictSmall">
+      ※ Filed under: "things that can wait until Monday"<br>
+      Signed, Sealed, & Shelved by the Bureau
+    </div>
+
+    <div class="signature-line">
+      Authorized by: <span></span>
+    </div>
+
+    <button class="reset" onclick="reset()">◄ Start a new petition</button>
+  </div>
+
+  <footer>
+    <span>Form B-1138 — Severity Division</span>
+    <span>Property of the Bureau</span>
+    <span>Unauthorized escalation is punishable</span>
+  </footer>
+</div>
+
+<script>
+  // The mandatory opening five
+  const OPENING = [
+    {
+      q: "Is it blocking?",
+      fn: "A simple question. Answer with your chest."
+    },
+    {
+      q: "Is it really blocking?",
+      fn: "Think about it. Actually think. We'll wait."
+    },
+    {
+      q: "Are you blocked?",
+      fn: "You, personally. Right now. Unable to do any other work on earth."
+    },
+    {
+      q: "Is the customer's life in danger?",
+      fn: "Not metaphorically. Clinical, measurable danger. Heart rate, pulse, the works."
+    },
+    {
+      q: "Are YOU in danger?",
+      fn: "Look around. Is there a tiger? Is the building on fire? Please be specific."
+    }
+  ];
+
+  // The absurd corpus — rotates every session
+  const CORPUS = [
+    { q: "Is it blocking the arrival of the Second Coming of the Messiah, who will save the Earth?", fn: "The Gospel is quite specific about the signs. Your JIRA ticket is not among them." },
+    { q: "Is it endangering the life of the God-Emperor of Mankind, enthroned upon the Golden Throne of Terra?", fn: "The Astronomican dims for lesser reasons. Proceed carefully." },
+    { q: "Is it preventing Frodo from reaching Mount Doom before the armies of Mordor overrun Minas Tirith?", fn: "Note: Gandalf has already filed three P0s this quarter. None were upheld." },
+    { q: "Is it actively delaying the return of King Arthur from the Isle of Avalon in Britain's hour of greatest need?", fn: "Merlin was consulted. He asked to be unsubscribed from this thread." },
+    { q: "Is it interfering with the ignition sequence of humanity's last-chance Orion-drive colony ship?", fn: "T-minus launch is not a negotiable deadline. Your staging bug is." },
+    { q: "Is it causing a stable time loop paradox that will erase your parents before you are conceived?", fn: "If yes, please upload a photograph of your hand and check if it is fading." },
+    { q: "Is it preventing Neo from learning Kung Fu, thus dooming the resistance of Zion?", fn: "Morpheus has offered a red pill OR a blue pill. There is no 'ship it on Friday' pill." },
+    { q: "Is it blocking the Fellowship from voting on whether to take the Ring to Mordor?", fn: "Democracy in Rivendell has standards. Yours should too." },
+    { q: "Is it endangering the structural integrity of the Death Star's thermal exhaust port — and thus, Imperial dominance of the galaxy?", fn: "The rebels found an exploit in under 2 minutes. Is yours as critical?" },
+    { q: "Is it preventing the Avengers from assembling before Thanos snaps his fingers?", fn: "Half of all life is at stake. Or, more likely, a dropdown is slightly misaligned." },
+    { q: "Is it interrupting the signing of the Magna Carta at Runnymede on June 15th, 1215?", fn: "King John will not sign a second time. He is notoriously petty." },
+    { q: "Is it delaying Paul Revere's midnight ride and thus the American Revolution itself?", fn: "One if by land, two if by sea. Zero if by merge conflict." },
+    { q: "Is it preventing Gandalf from arriving at Helm's Deep at dawn on the fifth day?", fn: "'Look to my coming on the first light of the fifth day' is a SLA. Honor it." },
+    { q: "Is it blocking the launch of Apollo 11 and thus humanity's first steps on the Moon?", fn: "Neil Armstrong does not care about your flaky test. He has his own." },
+    { q: "Is it preventing Sherlock Holmes from solving the case at 221B Baker Street?", fn: "Elementary problems rarely earn P0. Consider downgrading." },
+    { q: "Is it delaying Caesar's crossing of the Rubicon and the fall of the Roman Republic?", fn: "Alea iacta est. The die is cast. Is your ticket similarly irreversible?" },
+    { q: "Is it blocking Luke Skywalker from completing his Jedi training before confronting Vader on Bespin?", fn: "'Do or do not, there is no try.' There is also no 'blocked by external dependency.'" },
+    { q: "Is it preventing Doctor Who from saving the universe from the Time War one more time?", fn: "The Doctor has 13 regenerations. Your sprint has 10 days." },
+    { q: "Is it endangering Hogwarts' ability to hold the Triwizard Tournament this calendar year?", fn: "The Goblet of Fire does not recognize JIRA priority levels. Yet." },
+    { q: "Is it blocking the replicants from meeting their maker before their four-year lifespan expires?", fn: "All those moments will be lost in time, like tears in rain. Unlike your ticket." },
+    { q: "Is it preventing Aragorn from reforging Narsil into Andúril before the Battle of the Pelennor Fields?", fn: "Elrond's smiths do not work weekends. Neither, frankly, should you." },
+    { q: "Is it delaying Samwise Gamgee's return to Rosie Cotton in the Shire?", fn: "If yes, escalate immediately. This is the only acceptable P0." },
+    { q: "Is it stopping Wall-E from successfully planting the last seedling on Earth?", fn: "700 years of garbage sorting did not prepare him for your CSS bug." },
+    { q: "Is it blocking the return of Halley's Comet on its 76-year orbital schedule?", fn: "Celestial mechanics are not subject to quarterly OKRs." },
+    { q: "Is it preventing the Great Filter from being survived by the human species?", fn: "Fermi asked a question. You are the answer. Sort of." },
+    { q: "Is it interfering with the completion of the Sagrada Família after 140+ years of construction?", fn: "Gaudí is patient. Your PM is not. This is telling." },
+    { q: "Is it blocking Beatrix Kiddo from completing her list of five names in Kill Bill Vol. 2?", fn: "The Bride has a kanban board too. Hers actually ships." },
+    { q: "Is it preventing Captain Ahab from harpooning the white whale Moby-Dick?", fn: "Obsession is not a valid severity label. We checked." },
+    { q: "Is it endangering Princess Leia's diplomatic mission from Alderaan to Tatooine?", fn: "Help me, Obi-Wan Kenobi. You're my only P0." },
+    { q: "Is it delaying Odysseus's return to Ithaca and Penelope's loom?", fn: "Ten years of war. Ten years of travel. One week for a hotfix. Perspective." },
+    { q: "Is it preventing Marty McFly from hitting 88 mph before the lightning strikes the clock tower?", fn: "Great Scott. A hard deadline. Unlike yours." },
+    { q: "Is it blocking the Rebel Alliance from transmitting the Death Star plans to Princess Leia?", fn: "Many Bothans died to bring us this information. For a staging deploy, though?" },
+    { q: "Is it stopping the Fremen from riding sandworms and liberating Arrakis?", fn: "The spice must flow. So must your ticket — to the backlog." },
+    { q: "Is it preventing Hercule Poirot from gathering all suspects in the drawing room for the Big Reveal?", fn: "The little grey cells have concluded: this is not P0." },
+    { q: "Is it delaying the completion of the Channel Tunnel between England and France?", fn: "200 years of discussion. 6 years of boring. Your feature can wait a sprint." },
+    { q: "Is it endangering Link's ability to rescue Princess Zelda from Ganondorf this cycle?", fn: "Hyrule has fallen 17 times already. It endures. So will your product." },
+    { q: "Is it preventing Neil deGrasse Tyson from correcting someone's astrophysics on the internet?", fn: "Actually, nothing can prevent this. Nevermind." },
+    { q: "Is it blocking the prophecy of the Chosen One foretold in the ancient scrolls of your company wiki?", fn: "Scrolls last edited: 3 years ago. By an intern. Who has since left." },
+    { q: "Is it causing the Nazgûl to fly sorties over your office building at this exact moment?", fn: "Please check the window. We'll hold." },
+    { q: "Is it delaying the detonation of the Genesis Device in the nebula near Regula I?", fn: "Khan has strong opinions about deadlines. And about you, specifically." },
+    { q: "Is it preventing Scrooge McDuck from completing his daily swim through the Money Bin?", fn: "A duck delayed is a duck denied. A ticket deferred is, honestly, fine." },
+    { q: "Is it blocking the heat death of the universe, thus unfairly prolonging suffering?", fn: "If yes, marketing would like a word. This is actually on-brand for Q4." },
+  ];
+
+  let shuffled = [];
+  let queue = [];
+  let answered = 0;
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function buildQueue() {
+    // Mandatory opening 5, then 15 random absurd, then 5 more as escalation
+    const corpus = shuffle(CORPUS);
+    queue = [
+      ...OPENING,
+      ...corpus.slice(0, 20)
+    ];
+    answered = 0;
+  }
+
+  function render() {
+    const card = document.getElementById('questionCard');
+    const verdict = document.getElementById('verdict');
+    if (queue.length === 0) {
+      // They survived. It really is blocking.
+      card.style.display = 'none';
+      verdict.className = 'verdict show blocking';
+      document.getElementById('verdictStamp').textContent = '★ BLOCKING ★';
+      document.getElementById('verdictStamp').style.borderColor = 'var(--red-deep)';
+      document.getElementById('verdictSmall').innerHTML = `
+        By surviving all ${OPENING.length + 20} interrogatives without a single hesitation,<br>
+        you have proven your cause just. This ticket is hereby <strong>P0</strong>.<br>
+        May whatever god(s) you worship have mercy on your on-call rotation.
+      `;
+      return;
+    }
+    const current = queue[0];
+    document.getElementById('questionText').textContent = current.q;
+    document.getElementById('footnoteText').textContent = current.fn;
+    document.getElementById('progress').textContent =
+      `${String(answered + 1).padStart(2, '0')} / ${String(answered + queue.length).padStart(2, '0')}`;
+    document.getElementById('counter').textContent =
+      `${String(answered).padStart(2, '0')} / ${String(answered + queue.length).padStart(2, '0')}`;
+  }
+
+  function answerYes() {
+    queue.shift();
+    answered++;
+    render();
+  }
+
+  function answerNo() {
+    document.getElementById('questionCard').style.display = 'none';
+    const v = document.getElementById('verdict');
+    v.className = 'verdict show';
+    document.getElementById('verdictStamp').textContent = 'NOT BLOCKING';
+    const reasons = [
+      `Reclassified after ${answered} honest admission${answered === 1 ? '' : 's'}.`,
+      "Filed under: 'things that can wait until Monday'",
+      "A single 'no' was sufficient. The Bureau thanks you for your honesty.",
+      "Returned to the backlog with a polite note attached."
+    ];
+    document.getElementById('verdictSmall').innerHTML = `
+      ※ ${reasons[0]}<br>
+      ${reasons[1]}<br>
+      <br>
+      Signed, Sealed, &amp; Shelved by the Bureau
+    `;
+  }
+
+  function reset() {
+    document.getElementById('questionCard').style.display = 'block';
+    document.getElementById('verdict').className = 'verdict';
+    buildQueue();
+    render();
+  }
+
+  document.getElementById('btnYes').addEventListener('click', answerYes);
+  document.getElementById('btnNo').addEventListener('click', answerNo);
+
+  // date
+  const d = new Date();
+  document.getElementById('date').textContent =
+    d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).toUpperCase();
+
+  buildQueue();
+  render();
+</script>
+</body>
+</html>
